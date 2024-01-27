@@ -1,0 +1,26 @@
+{
+    "name": "AssetsPictureTaker.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:f51ebe6a0ceec4240a699833d6309b23",
+        "GUID:9e24947de15b9834991c9d8411ea37cf",
+        "GUID:84651a3751eca9349aac36a66bba901b",
+        "GUID:69448af7b92c7f342b298e06a37122aa",
+        "GUID:593a5b492d29ac6448b1ebf7f035ef33",
+        "GUID:49818357e697641afb75d2f8acaf1861",
+        "GUID:e6234d6c1f7bf4e4db20eddc411c00b8",
+        "GUID:49b49c76ee64f6b41bf28ef951cb0e50",
+        "GUID:8dbaa5a3d3e4f4935930fd2fae4eb5ad"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
