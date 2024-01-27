@@ -115,10 +115,23 @@ namespace TanitakaTech.AssetsPictureTaker
                 saveDirectory: path,
                 renderResult: renderResult,
                 prefabName: prefabName);
-            if (File.Exists(pictureConvertResult.FileNamePath) && !isOverwriteSameName)
+            bool isExists = File.Exists(pictureConvertResult.FileNamePath);
+            if (!isExists || isOverwriteSameName)
             {
-                Debug.LogWarning($"File already exists: {pictureConvertResult.FileNamePath}");
                 File.WriteAllBytes(pictureConvertResult.FileNamePath, pictureConvertResult.PictureBytes);
+                AssetDatabase.Refresh();
+                AssetDatabase.ImportAsset(pictureConvertResult.FileNamePath);
+                
+                string type = isExists ? "Overwritten" : "Saved";
+                Debug.Log($"{type}: <a href=\"{pictureConvertResult.FileNamePath}\">{pictureConvertResult.FileNamePath}</a>", 
+                    AssetDatabase.LoadAssetAtPath(pictureConvertResult.FileNamePath, typeof(UnityEngine.Object))
+                    );
+            }
+            else
+            {
+                Debug.LogWarning($"File already exists: {{<a href=\"{pictureConvertResult.FileNamePath}\">{pictureConvertResult.FileNamePath}</a>",
+                    AssetDatabase.LoadAssetAtPath(pictureConvertResult.FileNamePath, typeof(UnityEngine.Object))
+                    );
             }
 
             // Cleanup
