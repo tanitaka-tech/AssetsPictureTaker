@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TanitakaTech.AssetsPictureTaker
+namespace TanitakaTech.AssetsPictureTaker.PrefabsPictureTaker
 {
     public class PrefabsPictureTaker : MonoBehaviour
     {

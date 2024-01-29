@@ -33,12 +33,12 @@ namespace TanitakaTech.AssetsPictureTaker
         {
             private const string CategoryName = "0_PrefabsPictureTaker";
 
-            [field: UserSetting(
-                category: CategoryName, 
-                title: "PrefabPictureTakerSettingsPreset",
-                tooltip: "")]
-            public static ProjectSetting<PrefabsPictureTakerSettingsScriptableObject> PrefabPictureTakerSettingsPreset { get; }
-                = new("PrefabPictureTakerSettingsPreset", null);
+            // [field: UserSetting(
+            //     category: CategoryName, 
+            //     title: "PrefabPictureTakerSettingsPreset",
+            //     tooltip: "")]
+            // public static ProjectSetting<PrefabsPictureTakerSettingsScriptableObject> PrefabPictureTakerSettingsPreset { get; }
+            //     = new("PrefabPictureTakerSettingsPreset", null);
             
             // [UserSettingBlock(CategoryName)]
             // private static void Draw(string searchContext)

@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace TanitakaTech.AssetsPictureTaker
+namespace TanitakaTech.AssetsPictureTaker.PrefabsPictureTaker
 {
     [CustomEditor(typeof(PrefabsPictureTaker))]
     public class PrefabsPictureTakerEditor : Editor

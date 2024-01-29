@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Cysharp.Threading.Tasks;
+using TanitakaTech.AssetsPictureTaker.PictureConverter;
 using UnityEditor;
 using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
@@ -26,7 +27,7 @@ namespace TanitakaTech.AssetsPictureTaker
         [Header("Save Settings")]
         [SerializeField] private DefaultAsset saveFolder;
         [SerializeField] private bool isOverwriteSameName;
-        [SerializeReference, SubclassSelector] private IPictureConverter pictureConverter = new PictureConverter();
+        [SerializeReference, SubclassSelector] private IPictureConverter pictureConverter = new DefaultPictureConverter();
         
         [MenuItem("Assets/Create/ScriptableObjects/PrefabsPictureTakerSettingsPreset")]
         public static void CreatePreset()
@@ -90,13 +91,13 @@ namespace TanitakaTech.AssetsPictureTaker
                 if (handle.Status == AsyncOperationStatus.Succeeded)
                 {
                     GameObject prefabInstance = handle.Result;
-                    CaptureAndSave(prefabInstance, key.ToString(), renderCamera);
+                    CaptureAndSave(key.ToString(), renderCamera);
                     Addressables.ReleaseInstance(prefabInstance);
                 }
             }
         }
 
-        private void CaptureAndSave(GameObject prefab, string prefabName, Camera renderCamera)
+        private void CaptureAndSave(string prefabName, Camera renderCamera)
         {
             // Set up render camera here if needed
 
