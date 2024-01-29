@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Cysharp.Threading.Tasks;
+using TanitakaTech.AssetsPictureTaker.ConvertResultHandler;
 using TanitakaTech.AssetsPictureTaker.PictureConverter;
 using UnityEditor;
 using UnityEditor.AddressableAssets.Settings;
@@ -28,6 +29,7 @@ namespace TanitakaTech.AssetsPictureTaker
         [SerializeField] private DefaultAsset saveFolder;
         [SerializeField] private bool isOverwriteSameName;
         [SerializeReference, SubclassSelector] private IPictureConverter pictureConverter = new DefaultPictureConverter();
+        [SerializeReference, SubclassSelector] private IConvertResultHandler convertResultHandler = new NothingConvertResultHandler();
         
         [MenuItem("Assets/Create/ScriptableObjects/PrefabsPictureTakerSettingsPreset")]
         public static void CreatePreset()
@@ -69,7 +71,7 @@ namespace TanitakaTech.AssetsPictureTaker
             return true;
         }
         
-        public async UniTaskVoid TakeCaptures(Transform instantiateParentTransform, Camera renderCamera)
+        public async UniTask TakeCaptures(Transform instantiateParentTransform, Camera renderCamera)
         {
             if (!SerializeFieldValidation())
             {
@@ -83,6 +85,7 @@ namespace TanitakaTech.AssetsPictureTaker
 
         private async UniTask CapturePrefabs(List<object> keys, Transform instantiateParentTransform, Camera renderCamera)
         {
+            List<PictureConvertResult> pictureConvertResults = new List<PictureConvertResult>();
             foreach (var key in keys)
             {
                 AsyncOperationHandle<GameObject> handle = Addressables.InstantiateAsync(key, instantiateParentTransform);
@@ -91,14 +94,16 @@ namespace TanitakaTech.AssetsPictureTaker
                 if (handle.Status == AsyncOperationStatus.Succeeded)
                 {
                     GameObject prefabInstance = handle.Result;
-                    CaptureAndSave(key.ToString(), renderCamera);
+                    var pictureConvertResult = CaptureAndSave(key.ToString(), renderCamera);
+                    pictureConvertResults.Add(pictureConvertResult);
                     Addressables.ReleaseInstance(prefabInstance);
                 }
             }
             AssetDatabase.Refresh();
+            convertResultHandler.HandleConvertResult(pictureConvertResults);
         }
 
-        private void CaptureAndSave(string prefabName, Camera renderCamera)
+        private PictureConvertResult CaptureAndSave(string prefabName, Camera renderCamera)
         {
             // Set up render camera here if needed
 
@@ -138,6 +143,8 @@ namespace TanitakaTech.AssetsPictureTaker
             renderCamera.targetTexture = null;
             DestroyImmediate(renderTexture);
             DestroyImmediate(renderResult);
+            
+            return pictureConvertResult;
         }
     }
 }

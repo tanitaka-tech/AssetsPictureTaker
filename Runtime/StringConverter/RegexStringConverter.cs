@@ -9,6 +9,10 @@ namespace TanitakaTech.AssetsPictureTaker.StringConverter
         [SerializeField] private string pattern = @"P_GameObject_(\d+)";
         [SerializeField] private string replacement = "P_GameObjectPicture_$1";
 
+        public RegexStringConverter()
+        {
+        }
+        
         public RegexStringConverter(string pattern, string replacement)
         {
             this.pattern = pattern;

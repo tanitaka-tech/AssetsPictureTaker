@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,11 +7,13 @@ namespace TanitakaTech.AssetsPictureTaker.PrefabsPictureTaker
     [CustomEditor(typeof(PrefabsPictureTaker))]
     public class PrefabsPictureTakerEditor : Editor
     {
-        public override void OnInspectorGUI()
+        private static bool isDuringTaking = false;
+
+        public override async void OnInspectorGUI()
         {
             base.OnInspectorGUI();
             
-            if (GUILayout.Button("Take"))
+            if (!isDuringTaking && GUILayout.Button("Take"))
             {
                 var prefabsPictureTaker = target as PrefabsPictureTaker;
                 
@@ -25,10 +28,22 @@ namespace TanitakaTech.AssetsPictureTaker.PrefabsPictureTaker
                     return;
                 }
 
-                prefabsPictureTaker.PrefabsPictureTakerSettingsScriptableObject.TakeCaptures(
+                isDuringTaking = true;
+                try
+                {
+                    await prefabsPictureTaker.PrefabsPictureTakerSettingsScriptableObject.TakeCaptures(
                         prefabsPictureTaker.InstantiateParentTransform,
-                        prefabsPictureTaker.RenderCamera)
-                    .Forget();
+                        prefabsPictureTaker.RenderCamera);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e);
+                }
+                isDuringTaking = false;
+            }
+            else if (isDuringTaking)
+            {
+                GUILayout.Label("Taking...");
             }
         }
     }
