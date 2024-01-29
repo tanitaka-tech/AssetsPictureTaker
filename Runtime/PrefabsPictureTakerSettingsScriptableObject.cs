@@ -95,6 +95,7 @@ namespace TanitakaTech.AssetsPictureTaker
                     Addressables.ReleaseInstance(prefabInstance);
                 }
             }
+            AssetDatabase.Refresh();
         }
 
         private void CaptureAndSave(string prefabName, Camera renderCamera)
@@ -120,9 +121,6 @@ namespace TanitakaTech.AssetsPictureTaker
             if (!isExists || isOverwriteSameName)
             {
                 File.WriteAllBytes(pictureConvertResult.FileNamePath, pictureConvertResult.PictureBytes);
-                AssetDatabase.Refresh();
-                AssetDatabase.ImportAsset(pictureConvertResult.FileNamePath);
-                
                 string type = isExists ? "Overwritten" : "Saved";
                 Debug.Log($"{type}: <a href=\"{pictureConvertResult.FileNamePath}\">{pictureConvertResult.FileNamePath}</a>", 
                     AssetDatabase.LoadAssetAtPath(pictureConvertResult.FileNamePath, typeof(UnityEngine.Object))
