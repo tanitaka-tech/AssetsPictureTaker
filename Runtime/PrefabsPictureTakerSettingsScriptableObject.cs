@@ -99,6 +99,9 @@ namespace TanitakaTech.AssetsPictureTaker
                     var pictureConvertResult = CaptureAndSave(prefabInstance, key.ToString(), renderCamera);
                     pictureConvertResults.Add(pictureConvertResult);
                     Addressables.ReleaseInstance(prefabInstance);
+                    
+                    // NOTE: If the scene drawing is not updated, the drawing will stop, so call it manually.
+                    EditorApplication.QueuePlayerLoopUpdate();
                 }
             }
             AssetDatabase.Refresh();
