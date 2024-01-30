@@ -10,6 +10,15 @@ namespace TanitakaTech.AssetsPictureTaker.PictureEncoder
     public class WebpPictureEncoder : IPictureEncoder
     {
         [SerializeField] private int quality = 80;
+
+        public WebpPictureEncoder()
+        {
+        }
+
+        public WebpPictureEncoder(int quality)
+        {
+            this.quality = quality;
+        }
         
         PictureEncodeResult IPictureEncoder.EncodePicture(Texture2D texture2D)
         {

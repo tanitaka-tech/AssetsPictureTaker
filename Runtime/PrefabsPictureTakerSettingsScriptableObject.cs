@@ -6,6 +6,9 @@ using System.Reflection;
 using Cysharp.Threading.Tasks;
 using TanitakaTech.AssetsPictureTaker.ConvertResultHandler;
 using TanitakaTech.AssetsPictureTaker.PictureConverter;
+using TanitakaTech.AssetsPictureTaker.PictureEncoder;
+using TanitakaTech.AssetsPictureTaker.PrefabPictureTaker;
+using TanitakaTech.AssetsPictureTaker.Texture2DProcessor;
 using UnityEditor;
 using UnityEditor.AddressableAssets.Settings;
 using UnityEngine;
@@ -21,9 +24,8 @@ namespace TanitakaTech.AssetsPictureTaker
         [SerializeField] private AddressableAssetGroup prefabContainAssetGroup;
         
         [Header("Capture Settings")]
-        [SerializeField] private int renderTextureWidth = 1024;
-        [SerializeField] private int renderTextureHeight = 768;
-        [SerializeField] private int renderTextureDepth = 24;
+        [SerializeReference, SubclassSelector] private IPrefabPictureTaker prefabPictureTaker = new PrefabPictureTaker.PrefabPictureTaker();
+        [SerializeReference, SubclassSelector] private ITexture2DProcessor[] texture2DProcessors;
         
         [Header("Save Settings")]
         [SerializeField] private DefaultAsset saveFolder;
@@ -94,7 +96,7 @@ namespace TanitakaTech.AssetsPictureTaker
                 if (handle.Status == AsyncOperationStatus.Succeeded)
                 {
                     GameObject prefabInstance = handle.Result;
-                    var pictureConvertResult = CaptureAndSave(key.ToString(), renderCamera);
+                    var pictureConvertResult = CaptureAndSave(prefabInstance, key.ToString(), renderCamera);
                     pictureConvertResults.Add(pictureConvertResult);
                     Addressables.ReleaseInstance(prefabInstance);
                 }
@@ -103,18 +105,16 @@ namespace TanitakaTech.AssetsPictureTaker
             convertResultHandler.HandleConvertResult(pictureConvertResults);
         }
 
-        private PictureConvertResult CaptureAndSave(string prefabName, Camera renderCamera)
+        private PictureConvertResult CaptureAndSave(GameObject prefabInstance, string prefabName, Camera renderCamera)
         {
             // Set up render camera here if needed
 
             // Render and save the image
-            RenderTexture renderTexture = new RenderTexture(renderTextureWidth, renderTextureHeight, renderTextureDepth);
-            renderCamera.targetTexture = renderTexture;
-            Texture2D renderResult = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.ARGB32, false);
-            renderCamera.Render();
-            RenderTexture.active = renderTexture;
-            renderResult.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
-            renderResult.Apply();
+            Texture2D renderResult = prefabPictureTaker.TakePicture(prefabInstance, renderCamera);
+            foreach (var texture2DProcessor in texture2DProcessors)
+            {
+                renderResult = texture2DProcessor.Process(renderResult);
+            }
 
             // Save the image
             var path = AssetDatabase.GetAssetPath(saveFolder);
@@ -137,12 +137,6 @@ namespace TanitakaTech.AssetsPictureTaker
                     AssetDatabase.LoadAssetAtPath(pictureConvertResult.FileNamePath, typeof(UnityEngine.Object))
                     );
             }
-
-            // Cleanup
-            RenderTexture.active = null;
-            renderCamera.targetTexture = null;
-            DestroyImmediate(renderTexture);
-            DestroyImmediate(renderResult);
             
             return pictureConvertResult;
         }
