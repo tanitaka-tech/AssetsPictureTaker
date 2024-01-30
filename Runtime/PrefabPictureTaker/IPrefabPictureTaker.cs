@@ -34,7 +34,7 @@ namespace TanitakaTech.AssetsPictureTaker.PrefabPictureTaker
 
             // Render and save the image
             
-            RenderTexture renderTexture = new RenderTexture(1920, 1080, 24);
+            RenderTexture renderTexture = new RenderTexture(renderTextureWidth, renderTextureHeight, renderTextureDepth);
             camera.targetTexture = renderTexture;
             Texture2D renderResult = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.ARGB32, false);
             camera.Render();
