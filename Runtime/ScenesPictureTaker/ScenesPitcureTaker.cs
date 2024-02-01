@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if UNITY_EDITOR
+using UnityEngine;
 
 namespace TanitakaTech.AssetsPictureTaker.ScenesPictureTaker
 {
@@ -13,3 +14,4 @@ namespace TanitakaTech.AssetsPictureTaker.ScenesPictureTaker
         public PrefabsPictureTakerSettingsScriptableObject PrefabsPictureTakerSettingsScriptableObject => prefabsPictureTakerSettingsScriptableObject;
     }
 }
+#endif
