@@ -11,7 +11,8 @@ namespace TanitakaTech.AssetsPictureTaker.PictureEncoder
         public PictureEncodeResult EncodePicture(Texture2D texture2D)
         {
             var pictureBytes = texture2D.EncodeToJPG(quality: quality);
-            return new PictureEncodeResult(pictureBytes, "jpg");
+            return new PictureEncodeResult(pictureBytes);
         }
+        string IPictureEncoder.Extension => "jpg";
     }
 }

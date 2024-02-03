@@ -9,7 +9,8 @@ namespace TanitakaTech.AssetsPictureTaker.PictureEncoder
         public PictureEncodeResult EncodePicture(Texture2D texture2D)
         {
             var pictureBytes = texture2D.EncodeToPNG();
-            return new PictureEncodeResult(pictureBytes, "png");
+            return new PictureEncodeResult(pictureBytes);
         }
+        string IPictureEncoder.Extension => "png";
     }
 }

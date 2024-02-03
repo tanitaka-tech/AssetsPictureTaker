@@ -9,6 +9,7 @@ using TanitakaTech.AssetsPictureTaker.ConvertResultHandler;
 using TanitakaTech.AssetsPictureTaker.PictureConverter;
 using TanitakaTech.AssetsPictureTaker.PictureEncoder;
 using TanitakaTech.AssetsPictureTaker.PrefabPictureTaker;
+using TanitakaTech.AssetsPictureTaker.StringConverter;
 using TanitakaTech.AssetsPictureTaker.Texture2DProcessor;
 using UnityEditor;
 using UnityEditor.AddressableAssets.Settings;
@@ -33,7 +34,8 @@ namespace TanitakaTech.AssetsPictureTaker
         [SerializeField] private bool isOverwriteSameName;
         [SerializeReference, SubclassSelector] private IPictureConverter pictureConverter = new DefaultPictureConverter();
         [SerializeReference, SubclassSelector] private IConvertResultHandler convertResultHandler = new NothingConvertResultHandler();
-        
+        private string SaveDirectory => AssetDatabase.GetAssetPath(saveFolder);
+
         [MenuItem("Assets/Create/ScriptableObjects/PrefabsPictureTakerSettingsPreset")]
         public static void CreatePreset()
         {
@@ -91,6 +93,19 @@ namespace TanitakaTech.AssetsPictureTaker
             List<PictureConvertResult> pictureConvertResults = new List<PictureConvertResult>();
             foreach (var key in keys)
             {
+                // File path validation
+                if (isOverwriteSameName)
+                {
+                    string filePath = pictureConverter.GetFilePath(SaveDirectory, key.ToString());
+                    if (File.Exists(filePath))
+                    {
+                        Debug.LogWarning($"File already exists: {{<a href=\"{filePath}\">{filePath}</a>",
+                            AssetDatabase.LoadAssetAtPath(filePath, typeof(UnityEngine.Object))
+                        );
+                        continue;
+                    }
+                }
+                
                 AsyncOperationHandle<GameObject> handle = Addressables.InstantiateAsync(key, instantiateParentTransform);
                 await handle;
 
@@ -121,9 +136,8 @@ namespace TanitakaTech.AssetsPictureTaker
             }
 
             // Save the image
-            var path = AssetDatabase.GetAssetPath(saveFolder);
             var pictureConvertResult = pictureConverter.ConvertPicture(
-                saveDirectory: path,
+                saveDirectory: SaveDirectory,
                 renderResult: renderResult,
                 prefabName: prefabName);
             bool isExists = File.Exists(pictureConvertResult.FileNamePath);

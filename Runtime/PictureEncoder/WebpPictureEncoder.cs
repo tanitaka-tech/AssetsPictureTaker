@@ -41,8 +41,9 @@ namespace TanitakaTech.AssetsPictureTaker.PictureEncoder
                 lError: out var encodeError
             );
             
-            return new PictureEncodeResult(webpBytes, "webp");
+            return new PictureEncodeResult(webpBytes);
         }
+        string IPictureEncoder.Extension => "webp";
     }
 }
 #endif
