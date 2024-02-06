@@ -21,19 +21,21 @@ namespace TanitakaTech.AssetsPictureTaker.PrefabPictureTaker
         Texture2D IPrefabPictureTaker.TakePicture(GameObject gameObject, Camera camera)
         {
             // プレハブのBoundsを取得（プレハブの全Rendererから計算）
-            Bounds bounds = GetPrefabBounds(gameObject);
-            
-            // カメラの視野角とアスペクト比を取得
-            float verticalFOV = camera.fieldOfView;
-            float aspectRatio = camera.aspect;
-
-            // カメラとプレハブの中心との必要な距離を計算
-            float distance = Mathf.Max(bounds.size.x / aspectRatio, bounds.size.y) / (2f * Mathf.Tan(verticalFOV * 0.5f * Mathf.Deg2Rad));
-            distance *= cameraDistanceAdjustValue;
+            Bounds? boundsNullable = GetPrefabBounds(gameObject);
 
             // カメラの位置をプレハブの中心から後ろに距離分移動させる
-            if (needCameraDistanceAdjust)
+            if (needCameraDistanceAdjust && boundsNullable != null)
             {
+                Bounds bounds = boundsNullable.Value;
+                
+                // カメラの視野角とアスペクト比を取得
+                float verticalFOV = camera.fieldOfView;
+                float aspectRatio = camera.aspect;
+
+                // カメラとプレハブの中心との必要な距離を計算
+                float distance = Mathf.Max(bounds.size.x / aspectRatio, bounds.size.y) / (2f * Mathf.Tan(verticalFOV * 0.5f * Mathf.Deg2Rad));
+                distance *= cameraDistanceAdjustValue;
+                
                 camera.transform.position = bounds.center - camera.transform.forward * distance;
             }
 
@@ -55,11 +57,16 @@ namespace TanitakaTech.AssetsPictureTaker.PrefabPictureTaker
         }
         
 
-        private Bounds GetPrefabBounds(GameObject prefab)
+        private Bounds? GetPrefabBounds(GameObject prefab)
         {
             // プレハブの全Rendererを取得
             Renderer[] renderers = prefab.GetComponentsInChildren<Renderer>();
 
+            if (renderers.Length == 0)
+            {
+                return null;
+            }
+            
             // プレハブの境界ボックスを計算
             Bounds bounds = new Bounds(renderers[0].bounds.center, Vector3.zero);
             foreach (Renderer renderer in renderers)
