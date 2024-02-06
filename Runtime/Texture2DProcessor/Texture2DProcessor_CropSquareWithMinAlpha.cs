@@ -11,7 +11,8 @@ namespace TanitakaTech.AssetsPictureTaker.Texture2DProcessor
         [SerializeField] private float cropMarginPixelX = 0.0f;
         [SerializeField] private float cropMarginPixelY = 0.0f;
         
-        [SerializeField] private List<Color> _cropColors = new List<Color>();
+        [SerializeField] private List<Color> cropColors = new List<Color>();
+        [SerializeField] private float cropColorTolerance = 0.01f;
         
         Texture2D ITexture2DProcessor.Process(Texture2D originalTexture)
         {
@@ -25,7 +26,11 @@ namespace TanitakaTech.AssetsPictureTaker.Texture2DProcessor
                 for (int x = 0; x < width; x++)
                 {
                     Color pixelColor = originalTexture.GetPixel(x, y);
-                    bool isCropColor = _cropColors.Any(c => c == pixelColor);
+                    bool isCropColor = cropColors.Any(c =>
+                        Mathf.Abs(c.r - pixelColor.r) < cropColorTolerance &&
+                        Mathf.Abs(c.g - pixelColor.g) < cropColorTolerance &&
+                        Mathf.Abs(c.b - pixelColor.b) < cropColorTolerance
+                    );
                     if (isCropColor)
                     {
                         originalTexture.SetPixel(x, y, Color.clear);
