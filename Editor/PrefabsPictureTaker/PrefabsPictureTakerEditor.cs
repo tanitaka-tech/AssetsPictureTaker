@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -49,7 +50,7 @@ namespace TanitakaTech.AssetsPictureTaker.PrefabsPictureTaker
             }
             
             // Test Prefab
-            if (!isDuringTaking && prefabsPictureTaker.TestPrefab != null && GUILayout.Button("Test Take"))
+            if (!isDuringTaking && prefabsPictureTaker.TestPrefabs.Any() && GUILayout.Button("Test Take"))
             {
                 if (prefabsPictureTaker.InstantiateParentTransform == null)
                 {
@@ -65,9 +66,12 @@ namespace TanitakaTech.AssetsPictureTaker.PrefabsPictureTaker
                 isDuringTaking = true;
                 try
                 {
-                    var instantiate = Instantiate(prefabsPictureTaker.TestPrefab, prefabsPictureTaker.InstantiateParentTransform);
-                    prefabsPictureTaker.PrefabsPictureTakerSettingsScriptableObject.CaptureAndSave(instantiate, prefabsPictureTaker.TestPrefab.name, prefabsPictureTaker.RenderCamera);
-                    DestroyImmediate(instantiate);
+                    foreach (var testPrefab in prefabsPictureTaker.TestPrefabs)
+                    {
+                        var instantiate = Instantiate(testPrefab, prefabsPictureTaker.InstantiateParentTransform);
+                        prefabsPictureTaker.PrefabsPictureTakerSettingsScriptableObject.CaptureAndSave(instantiate, testPrefab.name, prefabsPictureTaker.RenderCamera);
+                        DestroyImmediate(instantiate);
+                    }
                 }
                 catch (Exception e)
                 {
