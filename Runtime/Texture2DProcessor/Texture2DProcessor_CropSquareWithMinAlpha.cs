@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ namespace TanitakaTech.AssetsPictureTaker.Texture2DProcessor
     {
         [SerializeField] private float cropMarginPixelX = 0.0f;
         [SerializeField] private float cropMarginPixelY = 0.0f;
+        
+        [SerializeField] private List<Color> _cropColors = new List<Color>();
         
         Texture2D ITexture2DProcessor.Process(Texture2D originalTexture)
         {
@@ -22,7 +25,12 @@ namespace TanitakaTech.AssetsPictureTaker.Texture2DProcessor
                 for (int x = 0; x < width; x++)
                 {
                     Color pixelColor = originalTexture.GetPixel(x, y);
-                    if (pixelColor.a > 0) // アルファ値が0より大きい場合、ピクセルは不透明
+                    bool isCropColor = _cropColors.Any(c => c == pixelColor);
+                    if (isCropColor)
+                    {
+                        originalTexture.SetPixel(x, y, Color.clear);
+                    }
+                    if (pixelColor.a > 0 && !isCropColor) // アルファ値が0より大きい場合、ピクセルは不透明
                     {
                         if (x < xMin) xMin = x;
                         if (x > xMax) xMax = x;
