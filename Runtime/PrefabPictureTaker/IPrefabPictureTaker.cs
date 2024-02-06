@@ -15,6 +15,7 @@ namespace TanitakaTech.AssetsPictureTaker.PrefabPictureTaker
         [SerializeField] private int renderTextureWidth = 1024;
         [SerializeField] private int renderTextureHeight = 768;
         [SerializeField] private int renderTextureDepth = 24;
+        [SerializeField] private bool needCameraDistanceAdjust = true;
         [SerializeField] private float cameraDistanceAdjustValue = 1.5f;
         
         Texture2D IPrefabPictureTaker.TakePicture(GameObject gameObject, Camera camera)
@@ -31,7 +32,10 @@ namespace TanitakaTech.AssetsPictureTaker.PrefabPictureTaker
             distance *= cameraDistanceAdjustValue;
 
             // カメラの位置をプレハブの中心から後ろに距離分移動させる
-            camera.transform.position = bounds.center - camera.transform.forward * distance;
+            if (needCameraDistanceAdjust)
+            {
+                camera.transform.position = bounds.center - camera.transform.forward * distance;
+            }
 
             // Render and save the image
             
