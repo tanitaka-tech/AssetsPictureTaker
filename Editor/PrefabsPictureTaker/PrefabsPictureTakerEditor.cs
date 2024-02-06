@@ -14,10 +14,11 @@ namespace TanitakaTech.AssetsPictureTaker.PrefabsPictureTaker
         {
             base.OnInspectorGUI();
             
+            
+            var prefabsPictureTaker = target as PrefabsPictureTaker;
+            
             if (!isDuringTaking && GUILayout.Button("Take"))
             {
-                var prefabsPictureTaker = target as PrefabsPictureTaker;
-                
                 if (prefabsPictureTaker.InstantiateParentTransform == null)
                 {
                     Debug.LogError("Parent Transform is null");
@@ -45,6 +46,34 @@ namespace TanitakaTech.AssetsPictureTaker.PrefabsPictureTaker
             else if (isDuringTaking)
             {
                 GUILayout.Label("Taking...");
+            }
+            
+            // Test Prefab
+            if (!isDuringTaking && prefabsPictureTaker.TestPrefab != null && GUILayout.Button("Test Take"))
+            {
+                if (prefabsPictureTaker.InstantiateParentTransform == null)
+                {
+                    Debug.LogError("Parent Transform is null");
+                    return;
+                }
+                if (prefabsPictureTaker.RenderCamera == null)
+                {
+                    Debug.LogError("Render Camera is null");
+                    return;
+                }
+
+                isDuringTaking = true;
+                try
+                {
+                    var instantiate = Instantiate(prefabsPictureTaker.TestPrefab, prefabsPictureTaker.InstantiateParentTransform);
+                    prefabsPictureTaker.PrefabsPictureTakerSettingsScriptableObject.CaptureAndSave(instantiate, prefabsPictureTaker.TestPrefab.name, prefabsPictureTaker.RenderCamera);
+                    DestroyImmediate(instantiate);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e);
+                }
+                isDuringTaking = false;
             }
         }
     }

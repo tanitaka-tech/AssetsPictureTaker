@@ -97,7 +97,7 @@ namespace TanitakaTech.AssetsPictureTaker
                 if (handle.Status == AsyncOperationStatus.Succeeded)
                 {
                     GameObject prefabInstance = handle.Result;
-                    var pictureConvertResult = CaptureAndSave(prefabInstance, key.ToString(), renderCamera);
+                    var pictureConvertResult = CaptureAndSaveInternal(prefabInstance, key.ToString(), renderCamera);
                     pictureConvertResults.Add(pictureConvertResult);
                     Addressables.ReleaseInstance(prefabInstance);
                     
@@ -109,7 +109,7 @@ namespace TanitakaTech.AssetsPictureTaker
             convertResultHandler.HandleConvertResult(pictureConvertResults);
         }
 
-        private PictureConvertResult CaptureAndSave(GameObject prefabInstance, string prefabName, Camera renderCamera)
+        private PictureConvertResult CaptureAndSaveInternal(GameObject prefabInstance, string prefabName, Camera renderCamera)
         {
             // Set up render camera here if needed
 
@@ -143,6 +143,15 @@ namespace TanitakaTech.AssetsPictureTaker
             }
             
             return pictureConvertResult;
+        }
+
+        public PictureConvertResult CaptureAndSave(GameObject prefabInstance, string prefabName, Camera renderCamera)
+        {
+            var result = CaptureAndSaveInternal(prefabInstance, prefabName, renderCamera);
+            List<PictureConvertResult> pictureConvertResults = new List<PictureConvertResult>() { result };
+            AssetDatabase.Refresh();
+            convertResultHandler.HandleConvertResult(pictureConvertResults);
+            return result;
         }
     }
 }

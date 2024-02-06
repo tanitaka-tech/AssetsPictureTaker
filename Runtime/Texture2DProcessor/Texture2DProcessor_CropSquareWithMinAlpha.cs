@@ -7,7 +7,8 @@ namespace TanitakaTech.AssetsPictureTaker.Texture2DProcessor
     [Serializable]
     public class Texture2DProcessor_CropSquareWithMinAlpha : ITexture2DProcessor
     {
-        [SerializeField] private float cropMarginPixel = 0.0f;
+        [SerializeField] private float cropMarginPixelX = 0.0f;
+        [SerializeField] private float cropMarginPixelY = 0.0f;
         
         Texture2D ITexture2DProcessor.Process(Texture2D originalTexture)
         {
@@ -32,10 +33,10 @@ namespace TanitakaTech.AssetsPictureTaker.Texture2DProcessor
             }
 
             // marginを考慮して矩形を拡大
-            xMin = Mathf.Max(0, xMin - Mathf.FloorToInt(cropMarginPixel));
-            xMax = Mathf.Min(width - 1, xMax + Mathf.FloorToInt(cropMarginPixel));
-            yMin = Mathf.Max(0, yMin - Mathf.FloorToInt(cropMarginPixel));
-            yMax = Mathf.Min(height - 1, yMax + Mathf.FloorToInt(cropMarginPixel));
+            xMin = Mathf.Max(0, xMin - Mathf.FloorToInt(cropMarginPixelX));
+            xMax = Mathf.Min(width - 1, xMax + Mathf.FloorToInt(cropMarginPixelX));
+            yMin = Mathf.Max(0, yMin - Mathf.FloorToInt(cropMarginPixelY));
+            yMax = Mathf.Min(height - 1, yMax + Mathf.FloorToInt(cropMarginPixelY));
 
             // 切り抜く矩形の幅と高さ
             int cropWidth = xMax - xMin + 1;
