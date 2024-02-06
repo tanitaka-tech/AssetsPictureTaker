@@ -7,7 +7,6 @@ using System.Reflection;
 using Cysharp.Threading.Tasks;
 using TanitakaTech.AssetsPictureTaker.ConvertResultHandler;
 using TanitakaTech.AssetsPictureTaker.PictureConverter;
-using TanitakaTech.AssetsPictureTaker.PictureEncoder;
 using TanitakaTech.AssetsPictureTaker.PrefabPictureTaker;
 using TanitakaTech.AssetsPictureTaker.Texture2DProcessor;
 using UnityEditor;
@@ -89,22 +88,35 @@ namespace TanitakaTech.AssetsPictureTaker
         private async UniTask CapturePrefabs(List<object> keys, Transform instantiateParentTransform, Camera renderCamera)
         {
             List<PictureConvertResult> pictureConvertResults = new List<PictureConvertResult>();
-            foreach (var key in keys)
-            {
-                AsyncOperationHandle<GameObject> handle = Addressables.InstantiateAsync(key, instantiateParentTransform);
-                await handle;
+            List<AsyncOperationHandle<GameObject>> prefabs = new();
+            
+            // Load in parallel
+            await UniTask.WhenAll(
+                keys
+                    .Select(Addressables.LoadAssetAsync<GameObject>)
+                    .Select(handle =>
+                    {
+                        return UniTask.Create(async () =>
+                        {
+                            await handle;
+                            if (handle.Status == AsyncOperationStatus.Succeeded)
+                            {
+                                prefabs.Add(handle);
+                            }
+                        });
+                    })
+            );
 
-                if (handle.Status == AsyncOperationStatus.Succeeded)
+            // Instantiate and capture
+            prefabs.ForEach(prefab =>
                 {
-                    GameObject prefabInstance = handle.Result;
-                    var pictureConvertResult = CaptureAndSaveInternal(prefabInstance, key.ToString(), renderCamera);
+                    GameObject prefabInstance = Instantiate(prefab.Result, instantiateParentTransform);
+                    var pictureConvertResult = CaptureAndSaveInternal(prefabInstance, prefab.Result.name, renderCamera);
                     pictureConvertResults.Add(pictureConvertResult);
-                    Addressables.ReleaseInstance(prefabInstance);
-                    
-                    // NOTE: If the scene drawing is not updated, the drawing will stop, so call it manually.
-                    EditorApplication.QueuePlayerLoopUpdate();
+                    DestroyImmediate(prefabInstance);
+                    Addressables.Release(prefab);
                 }
-            }
+            );
             AssetDatabase.Refresh();
             convertResultHandler.HandleConvertResult(pictureConvertResults);
         }
