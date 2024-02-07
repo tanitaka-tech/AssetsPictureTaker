@@ -59,6 +59,10 @@ namespace TanitakaTech.AssetsPictureTaker.Texture2DProcessor
             int newSize = Mathf.Max(cropWidth, cropHeight);
 
             // 切り抜いたTexture2Dを作成
+            if(cropWidth < 1 || cropHeight < 1)
+            {
+                throw new ArgumentException("There is no area to draw");
+            }
             Texture2D croppedTexture = new Texture2D(cropWidth, cropHeight);
             croppedTexture.SetPixels(originalTexture.GetPixels(xMin, yMin, cropWidth, cropHeight));
             croppedTexture.Apply();

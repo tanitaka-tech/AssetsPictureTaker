@@ -66,12 +66,7 @@ namespace TanitakaTech.AssetsPictureTaker.PrefabsPictureTaker
                 isDuringTaking = true;
                 try
                 {
-                    foreach (var testPrefab in prefabsPictureTaker.TestPrefabs)
-                    {
-                        var instantiate = Instantiate(testPrefab, prefabsPictureTaker.InstantiateParentTransform);
-                        prefabsPictureTaker.PrefabsPictureTakerSettingsScriptableObject.CaptureAndSave(instantiate, testPrefab.name, prefabsPictureTaker.RenderCamera);
-                        DestroyImmediate(instantiate);
-                    }
+                    prefabsPictureTaker.PrefabsPictureTakerSettingsScriptableObject.CaptureAndSavePrefabs(prefabsPictureTaker.TestPrefabs, prefabsPictureTaker.RenderCamera, prefabsPictureTaker.InstantiateParentTransform);
                 }
                 catch (Exception e)
                 {
