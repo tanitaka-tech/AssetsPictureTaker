@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
@@ -14,10 +15,11 @@ namespace TanitakaTech.AssetsPictureTaker.PrefabsPictureTaker
         {
             base.OnInspectorGUI();
             
+            
+            var prefabsPictureTaker = target as PrefabsPictureTaker;
+            
             if (!isDuringTaking && GUILayout.Button("Take"))
             {
-                var prefabsPictureTaker = target as PrefabsPictureTaker;
-                
                 if (prefabsPictureTaker.InstantiateParentTransform == null)
                 {
                     Debug.LogError("Parent Transform is null");
@@ -47,6 +49,32 @@ namespace TanitakaTech.AssetsPictureTaker.PrefabsPictureTaker
             else if (isDuringTaking)
             {
                 GUILayout.Label("Taking...");
+            }
+            
+            // Test Prefab
+            if (!isDuringTaking && prefabsPictureTaker.TestPrefabs.Any() && GUILayout.Button("Test Take"))
+            {
+                if (prefabsPictureTaker.InstantiateParentTransform == null)
+                {
+                    Debug.LogError("Parent Transform is null");
+                    return;
+                }
+                if (prefabsPictureTaker.RenderCamera == null)
+                {
+                    Debug.LogError("Render Camera is null");
+                    return;
+                }
+
+                isDuringTaking = true;
+                try
+                {
+                    prefabsPictureTaker.PrefabsPictureTakerSettingsScriptableObject.CaptureAndSavePrefabs(prefabsPictureTaker.TestPrefabs, prefabsPictureTaker.RenderCamera, prefabsPictureTaker.InstantiateParentTransform);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e);
+                }
+                isDuringTaking = false;
             }
         }
     }
