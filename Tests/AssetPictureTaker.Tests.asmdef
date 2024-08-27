@@ -2,15 +2,21 @@
     "name": "AssetPictureTaker.Tests",
     "rootNamespace": "",
     "references": [
-        "GUID:8dbaa5a3d3e4f4935930fd2fae4eb5ad"
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "AssetsPictureTaker.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
-    "autoReferenced": true,
-    "defineConstraints": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }
