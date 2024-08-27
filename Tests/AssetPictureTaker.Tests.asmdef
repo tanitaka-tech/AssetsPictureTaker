@@ -1,0 +1,16 @@
+{
+    "name": "AssetPictureTaker.Tests",
+    "rootNamespace": "",
+    "references": [
+        "GUID:8dbaa5a3d3e4f4935930fd2fae4eb5ad"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

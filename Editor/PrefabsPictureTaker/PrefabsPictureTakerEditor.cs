@@ -34,9 +34,11 @@ namespace TanitakaTech.AssetsPictureTaker.PrefabsPictureTaker
                 isDuringTaking = true;
                 try
                 {
-                    await prefabsPictureTaker.PrefabsPictureTakerSettingsScriptableObject.TakeCaptures(
-                        prefabsPictureTaker.InstantiateParentTransform,
-                        prefabsPictureTaker.RenderCamera);
+                    await prefabsPictureTaker.PrefabsPictureTakerSettingsScriptableObject
+                        .TakeCaptures(
+                            prefabsPictureTaker.InstantiateParentTransform,
+                            prefabsPictureTaker.RenderCamera);
+                    EditorUtility.DisplayDialog("PrefabsPictureTaker", "Complete！", "OK");
                 }
                 catch (Exception e)
                 {

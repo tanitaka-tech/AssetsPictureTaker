@@ -6,17 +6,16 @@ namespace TanitakaTech.AssetsPictureTaker.PictureEncoder
     public interface IPictureEncoder
     {
         public PictureEncodeResult EncodePicture(Texture2D texture2D);
+        public string Extension { get; }
     }
 
     public class PictureEncodeResult
     {
         public byte[] PictureBytes { get; }
-        public string Extension { get; }
 
-        public PictureEncodeResult(byte[] pictureBytes, string extension)
+        public PictureEncodeResult(byte[] pictureBytes)
         {
             PictureBytes = pictureBytes;
-            Extension = extension;
         }
     }
 }

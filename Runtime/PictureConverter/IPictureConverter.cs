@@ -5,6 +5,7 @@ namespace TanitakaTech.AssetsPictureTaker.PictureConverter
     public interface IPictureConverter
     {
         PictureConvertResult ConvertPicture(string saveDirectory, Texture2D renderResult, string prefabName);
+        string GetFilePath(string saveDirectory, string prefabName);
     }
 
     public class PictureConvertResult

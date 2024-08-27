@@ -15,9 +15,14 @@ namespace TanitakaTech.AssetsPictureTaker.PictureConverter
         public PictureConvertResult ConvertPicture(string saveDirectory, Texture2D renderResult, string prefabName)
         {
             var encodedPicture = pictureEncoder.EncodePicture(renderResult);
-            var fileName = fileNameConverter.ConvertString(prefabName);
-            string fileNamePath = Path.Combine(saveDirectory, $"{fileName}.{encodedPicture.Extension}");
+            string fileNamePath = GetFilePath(saveDirectory, prefabName);
             return new PictureConvertResult(fileNamePath, encodedPicture.PictureBytes);
+        }
+
+        public string GetFilePath(string saveDirectory, string prefabName)
+        {
+            var fileName = fileNameConverter.ConvertString(prefabName);
+            return Path.Combine(saveDirectory, $"{fileName}.{pictureEncoder.Extension}");
         }
     }
 }
